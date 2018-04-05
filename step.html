@@ -25,6 +25,7 @@
 
 <!-- Add sidemenu -->
 <script>
+    var citizenship;
 (function($){
 	// Menu Functions
 	$(document).ready(function(){
@@ -42,6 +43,18 @@
   	});
     var name = getCookie('email').split('%');
     document.getElementById("greeting").innerHTML = "Hi, " + name[0];
+    var user_email = getCookie('email').replace("%40", "@");
+    $.get("user-detail.php", {email:user_email}, function(data) {
+        var jsonObject = JSON.parse(data);
+        $('#fname').val(jsonObject.first_name);
+        $('#lname').val(jsonObject.last_name);
+        $('#date').val(jsonObject.date_birth);
+        $('#citizenship option[value=' + jsonObject.citizenship + ']').attr('selected','selected');
+        if (jsonObject.passport_location == null) {
+            $('#submitBtn').attr('disabled', 'disabled');
+        }
+        citizenship = jsonObject.citizenship;
+    });
   });
 })(jQuery);
 
@@ -55,8 +68,30 @@ function getCookie(key) {
   return keyValue ? keyValue[2] : null;
 }
 
+function handleClickCheckbox() {
+    var checkbox1 = document.getElementById("term1");
+    var button = document.getElementById("nextBtn");
+    if (checkbox1.checked){
+        button.disabled = false;
+    } else {
+        button.disabled = true;
+    }
+}
+
+function changeFile(){
+    document.getElementById("submitBtn").disabled = false;
+}
+
 </script>
 
+<style type="text/css">
+button:disabled,
+button[disabled=disabled]{
+  border: 1px solid #999999;
+  background-color: #4f4634;
+  color: #666666;
+}
+</style>
 </head>
 
 <body>
@@ -66,7 +101,7 @@ function getCookie(key) {
   <div class="container"> <span class="logo"><a href="#home">
     <a href="index.html"><div id="logo"></div></a>
     </a></span>
-    <ul id="menu">
+    <ul id="menu" style="margin-top: 15px;">
       <!-- <li><a href="#">About</a></li> -->
       <li id="greeting">Hi, John</li>      
       <li><input type="button" onclick="logOut()" class="token-btn" value = "Log out"></li>
@@ -105,297 +140,192 @@ function getCookie(key) {
 
 <section class="step-bg2">
 <div class="container">
-<form id="regForm" action="step.php" method="post" enctype="multipart/form-data">
+<form id="regForm" action="step.php" method="post" enctype="multipart/form-data" style="width: 850px">
   <!-- One "tab" for each step in the form: -->
   <div class="tab">
     <div style="text-align:center;">
       <h1>Terms & Conditions</h1><div class="h-line" style="display:inline-block;"></div>
     </div>
     <br>
+    <div style="overflow-y: scroll;  width:100%; height: 400px;border:1px solid black; padding:10px; background-color: grey">
+      <p>
+        <h4>Overall</h4>
+        Entity “Asia Focus Group Pte Ltd” is the Company responsible for issuance of tokens.
+        <h4>Important Notice</h4>
+        The CONSENTIUM TOKENS are not securities or units in a collective investment scheme or
+        business trust, each as defined under Singapore’s Securities and Futures Act (Cap. 289)
+        (“<b>SFA</b>”). Accordingly, the SFA does not apply to the offer and sale of the CONSENTIUM
+        TOKENS. For the avoidance of doubt, this initial offering of CONSENTIUM TOKENS need
+        not be accompanied by any prospectus or profile statement and no prospectus or profile
+        statement needs to be lodged with the Monetary Authority of Singapore (“<b>MAS</b>”).
+        This [White Paper/Crowdsale Document/business deck] does not constitute an offer of, or an
+        invitation to purchase, the CONSENTIUM TOKENS in any jurisdiction in which such offer or
+        sale would be unlawful. No regulatory authority in Singapore, including the MAS, has
+        reviewed or approved or disapproved of the CONSENTIUM TOKENS or this [White
+        Paper/Crowdsale Document/business deck]. This [White Paper/Crowdsale
+        Document/business deck] and any part hereof may not be distributed or otherwise
+        disseminated in any jurisdiction where offering tokens in the manner set out this [White
+        Paper/Crowdsale Document/business deck] is regulated or prohibited.
+        The information in this [White Paper/Crowdsale Document/business deck] is current only as
+        of the date on the cover hereof. For any time after the cover date of this [White
+        Paper/Crowdsale Document/business deck], the information, including information
+        concerning Asia Focus Group Pte Ltd’s business operations and financial condition may
+        have changed. Neither the delivery of this [White Paper/Crowdsale Document/business
+        deck] nor any sale made in the related initial token offering shall, under any circumstances,
+        constitute a representation that no such changes have occurred. Asia Focus Group Pte Ltd
+        does not make or purport to make, and hereby disclaims, any representation, warranty,
+        undertaking, or other assurance in any form whatsoever to any person, including any
+        representations, warranties, undertakings, or other assurances in relation to the truth,
+        accuracy, or completeness of any part of the information in this[White Paper/Crowdsale
+        Document/business deck].
+        Whether taken as a whole or read in part, this [White Paper/Crowdsale Document/business
+        deck] is not, and should not be regarded as, any form of legal, financial, tax, or other
+        professional advice. You should seek independent professional advice before making your
+        own decision as to whether or not to purchase any CONSENTIUM TOKENS. You are
+        responsible for any and all evaluations, assessments, and decisions you make in relation to
+        investing in the CONSENTIUM TOKENS. You may request for additional information from
+        Asia Focus Group Pte Ltd in relation to this offer of CONSENTIUM TOKENS. Asia Focus
+        Group Pte Ltd may, but is not obliged to, disclose such information depending on whether (i)
+        it is legal to do so and (ii) the requested information is reasonably necessary to verify the
+        information contained in this [White Paper/Crowdsale Document/business deck].
+        CONSENTIUM TOKENS are intended for use within applications available on the Asia
+        Focus Group Pte Ltd Network for purposes stated in the White Paper and Asia Focus Group
+        Pte Ltd warrants that the CONSENTIUM TOKENS are fit for these purposes.
+        However, Asia Focus Group Pte Ltd is not responsible for compelling any person to accept
+        CONSENTIUM TOKENS and disclaims, to the fullest extent permitted by law, all liability for
+        any adverse consequences arising out of or in relation to such rejections of CONSENTIUM
+        TOKENS.
+        Upon purchasing any CONSENTIUM TOKENS, you will be deemed to have reviewed this
+        [White Paper/Crowdsale Document] (and any information requested and obtained from Asia
+        Focus Group Pte Ltd) in full and to have agreed to the terms of this offering of
+        CONSENTIUM TOKENS, including to the fact that this offering does not fall within the scope
+
+        of any securities laws in Singapore and is not regulated by the MAS. You further
+        acknowledge and agree that the CONSENTIUM TOKENS are not securities and are not
+        meant to generate any form of investment return.
+        The CONSENTIUM TOKENS and related services provided by Asia Focus Group Pte Ltd (if
+        any) are provided on an “as is” and “as available” basis. Asia Focus Group Pte Ltd does not
+        grant any warranties or make any representation, express or implied or otherwise, as to the
+        accessibility, quality, suitability, accuracy, adequacy, or completeness of the CONSENTIUM
+        TOKENS or any related services provided by Asia Focus Group Pte Ltd, and expressly
+        disclaims any liability for errors, delays, or omissions in, or for any action taken in reliance
+        on, the CONSENTIUM TOKENS and related services provided by Asia Focus Group Pte
+        Ltd. No warranty, including the warranties of non-infringement of third party rights, title,
+        merchantability, satisfactory quality, or fitness for a particular purpose, is given in
+        conjunction with the CONSENTIUM TOKENS and any related services provided by Asia
+        Focus Group Pte Ltd.
+        <h4>Token Disclaimer</h4>
+        The Consentium Coin tokens are not securities under Singapore’s Securities and Futures
+        Act  (Cap 289) (“SFA”).  They grant holders access to certain services within the
+        Consentium ChatApp ecosystem.  They are utility tokens whose entire value derives from
+        the services provided by the Consentium ChatApp Network in exchange for holding or
+        consumption of the tokens, as detailed here. They are not intended for speculation and hold
+        no rights to intellectual or other property or cash flows.  They are not equities, as they do not
+        provide any fractional ownership rights in the company and no claim in decision making over
+        company assets or strategy. There is no promise of value or claim on revenue associated
+        with the Consentium Coin tokens, similar to debentures, other than that derived from
+        platform usage. In short, PPN tokens are not equities, debentures or any form of securities
+        as defined under the SFA.
+        <h4>Regulatory Risks</h4>
+        The regulation of tokens such as the CONSENTIUM TOKENS is still in a very nascent stage
+        of development in Singapore. A high degree of uncertainty as to how tokens and token-
+        related activities are to be treated exists. The applicable legal and regulatory framework may
+        change subsequent to the date of issuance of this [White Paper/Crowdsale Document].
+        Such change may be very rapid and it is not possible to anticipate with any degree of
+        certainty the nature of such regulatory evolution. Asia Focus Group Pte Ltd does not in any
+        way represent that the regulatory status of the CONSENTIUM TOKENS will remain
+        unaffected by any regulatory changes that arise at any point in time before, during, and after
+        this offering.
+        <h4>Tax Risks</h4>
+        The tax characterization of CONSENTIUM TOKENS is unclear. Accordingly, the tax
+        treatment to which they will be subject is uncertain. All persons who wish to purchase
+        CONSENTIUM TOKENS should seek independent tax advice prior to deciding whether to
+        purchase any CONSENTIUM TOKENS. Asia Focus Group Pte Ltd does not make any
+        representation as to whether any tax consequences may arise from purchasing or holding
+        CONSENTIUM TOKENS.
+        <h4>Risk From Third Parties</h4>
+
+        The tokenised nature of CONSENTIUM TOKENS means that they are a blockchain-based
+        asset. The security, transferability, storage, and accessibility of blockchain assets depends
+        on factors outside of Asia Focus Group Pte Ltd’s control, such as the security, stability, and
+        suitability of the underlying blockchain (in this case, the Ethereum blockchain), mining
+        attacks, and who has access to the private key of a wallet where CONSENTIUM TOKENS
+        are stored. Asia Focus Group Pte Ltd is unable to assure that it can prevent such external
+        factors from having any direct or indirect adverse impact on any of the CONSENTIUM
+        TOKENS. Persons intending to purchase CONSENTIUM TOKENS should note that adverse
+        events caused by such external factors may results in the loss of some or all CONSENTIUM
+        TOKENS purchased. Such loss may be irreversible. Asia Focus Group Pte Ltd is not
+        responsible for taking steps to retrieve CONSENTIUM TOKENS lost in this manner.
+        <h4>Risks in purchasing CONSENTIUM TOKENS</h4>
+        Asia Focus Group Pte Ltd cannot and does not guarantee or otherwise assure that there are
+        no risks in relation to your purchase of CONSENTIUM TOKENS. The purchase of
+        CONSENTIUM TOKENS may, depending on the manner in which the relevant purchase is
+        effected, involve third parties or external platforms (e.g., wallets). The involvement of such
+        parties or platforms may introduce risks that would not otherwise be present, such as
+        misconduct or fraud by the third party, or your failure to receive CONSENTIUM TOKENS
+        upon duly making payment because of a third-party wallet’s incompatibility with
+        CONSENTIUM TOKENS. Asia Focus Group Pte Ltd is not responsible for any risks arising
+        due to the involvement of third parties, including the risk of not receiving (or subsequently
+        losing) any or all CONSENTIUM TOKENS you attempt to (or successfully) purchase.
+        <h4>Disclaimer [Private Investor Deck]</h4>
+        The information and opinions in this presentation are for general guidance only. The
+        information in this presentation does not contain all of the information that may be required
+        to evaluate a purchase of CONSENTIUM TOKENS. Persons considering investing in
+        CONSENTIUM TOKENS are responsible for conducting their own due diligence on Asia
+        Focus Group Pte Ltd and the CONSENTIUM TOKENS, and should ensure that they
+        understand and are able to bear the risks of investing in CONSENTIUM TOKENS, including
+        the risk of losing part or all of their investment.
+        The information and opinions in this presentation are, unless otherwise stated, current as of
+        the date of this presentation. Asia Focus Group Pte Ltd  (“<b>Asia Focus Group Pte Ltd</b>”) are
+        not obliged to update or revise any information or the opinions expressed in this presentation
+        as a result of new information, events occurring after the date of this presentation, or
+        otherwise.
+        Certain statements made in this presentation may not be based on historical information or
+        facts and may be “forward-looking statements”, including those relating to: (i) general
+        business plans, timelines, and strategy; (ii) adoption projections; and (iii) developments in
+        the industry, markets, or the competitive or regulatory environment. Actual results may differ
+        materially from these forward-looking statements due to a number of factors, including future
+        changes or developments in business, the competitive environment, or political, economic,
+        legal, and social conditions.
+      </p>
+    </div>
     <div class="clearfix">
       <table>
         <tr valign="top">
-          <td class="radio-btn"><input type="checkbox" name="term1" value="value1" oninput="this.className = ''"></td>
-          <td >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at neque velit. Mauris magna ex, eleifend ac gravida nec, lobortis sit amet nulla. Nullam sed quam ac risus ultrices faucibus. Nullam ac nisl tortor. Maecenas quis nunc bibendum, feugiat eros et, hendrerit quam. Morbi suscipit et magna non ullamcorper. Aliquam suscipit turpis ut imperdiet congue.</td>
+          <td class="radio-btn"><input type="checkbox" id="term1" onclick="handleClickCheckbox()" value="value1" oninput="this.className = ''"></td>
+          <td ><b>I agree with the terms and conditions.</b></td>
         </tr>
       </table>
     </div>
     
-    <div class="clearfix">
-      <table>
-        <tr valign="top">
-          <td class="radio-btn"><input type="checkbox" value="value2" oninput="this.className = ''"></td>
-          <td >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at neque velit. Mauris magna ex, eleifend ac gravida nec, lobortis sit amet nulla. Nullam sed quam ac risus ultrices faucibus. Nullam ac nisl tortor. Maecenas quis nunc bibendum, feugiat eros et, hendrerit quam. Morbi suscipit et magna non ullamcorper. Aliquam suscipit turpis ut imperdiet congue.</td>
-        </tr>
-      </table>
-    </div>
     <br>
     <br>
     <div style="overflow:auto;">
     <div style="text-align:center;">
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-      <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      <button type="button" id="nextBtn" onclick="nextPrev(1)" disabled>Next</button>
     </div>
   </div>
   </div>
   <div class="tab">
-  
     <div style="text-align:center;">
       <h1>Basic Information</h1><div class="h-line" style="display:inline-block;"></div>
     </div>
     <br>
     <div class="row">
     <div class="col-md-6 v-pad">
-      <input type="text" class="input-style" placeholder="First name..." name="fname">
+      <input id="fname" type="text" class="input-style" placeholder="First name..." name="fname">
     </div>
     <div class="col-md-6 v-pad">
-      <input type="text" class="input-style" placeholder="Last name..." name="lname">
+      <input id="lname" type="text" class="input-style" placeholder="Last name..." name="lname">
     </div>
     <div class="col-md-6 v-pad">
-      <input name="date_of_birth" type='text' id="datepicker" class="input-style calendar"  placeholder="Date of Birth *" value=""  />
+      <input id="date" name="date_of_birth" type='text' id="datepicker" class="input-style calendar"  placeholder="DD/MM/YYYY" value=""  />
     </div>
     <div class="col-md-6 v-pad">
-      <select class="input-style" name="citizenship" oninput="this.className = ''">
-            <option value="Afghanistan">Afghanistan</option>
-            <option value="Albania">Albania</option>
-            <option value="Algeria">Algeria</option>
-            <option value="American Samoa">American Samoa</option>
-            <option value="Andorra">Andorra</option>
-            <option value="Angola">Angola</option>
-            <option value="Anguilla">Anguilla</option>
-            <option value="Antartica">Antarctica</option>
-            <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-            <option value="Argentina">Argentina</option>
-            <option value="Armenia">Armenia</option>
-            <option value="Aruba">Aruba</option>
-            <option value="Australia">Australia</option>
-            <option value="Austria">Austria</option>
-            <option value="Azerbaijan">Azerbaijan</option>
-            <option value="Bahamas">Bahamas</option>
-            <option value="Bahrain">Bahrain</option>
-            <option value="Bangladesh">Bangladesh</option>
-            <option value="Barbados">Barbados</option>
-            <option value="Belarus">Belarus</option>
-            <option value="Belgium">Belgium</option>
-            <option value="Belize">Belize</option>
-            <option value="Benin">Benin</option>
-            <option value="Bermuda">Bermuda</option>
-            <option value="Bhutan">Bhutan</option>
-            <option value="Bolivia">Bolivia</option>
-            <option value="Bosnia and Herzegowina">Bosnia and Herzegowina</option>
-            <option value="Botswana">Botswana</option>
-            <option value="Bouvet Island">Bouvet Island</option>
-            <option value="Brazil">Brazil</option>
-            <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
-            <option value="Brunei Darussalam">Brunei Darussalam</option>
-            <option value="Bulgaria">Bulgaria</option>
-            <option value="Burkina Faso">Burkina Faso</option>
-            <option value="Burundi">Burundi</option>
-            <option value="Cambodia">Cambodia</option>
-            <option value="Cameroon">Cameroon</option>
-            <option value="Canada">Canada</option>
-            <option value="Cape Verde">Cape Verde</option>
-            <option value="Cayman Islands">Cayman Islands</option>
-            <option value="Central African Republic">Central African Republic</option>
-            <option value="Chad">Chad</option>
-            <option value="Chile">Chile</option>
-            <option value="China">China</option>
-            <option value="Christmas Island">Christmas Island</option>
-            <option value="Cocos Islands">Cocos (Keeling) Islands</option>
-            <option value="Colombia">Colombia</option>
-            <option value="Comoros">Comoros</option>
-            <option value="Congo">Congo</option>
-            <option value="Congo">Congo, the Democratic Republic of the</option>
-            <option value="Cook Islands">Cook Islands</option>
-            <option value="Costa Rica">Costa Rica</option>
-            <option value="Cota D'Ivoire">Cote d'Ivoire</option>
-            <option value="Croatia">Croatia (Hrvatska)</option>
-            <option value="Cuba">Cuba</option>
-            <option value="Cyprus">Cyprus</option>
-            <option value="Czech Republic">Czech Republic</option>
-            <option value="Denmark">Denmark</option>
-            <option value="Djibouti">Djibouti</option>
-            <option value="Dominica">Dominica</option>
-            <option value="Dominican Republic">Dominican Republic</option>
-            <option value="East Timor">East Timor</option>
-            <option value="Ecuador">Ecuador</option>
-            <option value="Egypt">Egypt</option>
-            <option value="El Salvador">El Salvador</option>
-            <option value="Equatorial Guinea">Equatorial Guinea</option>
-            <option value="Eritrea">Eritrea</option>
-            <option value="Estonia">Estonia</option>
-            <option value="Ethiopia">Ethiopia</option>
-            <option value="Falkland Islands">Falkland Islands (Malvinas)</option>
-            <option value="Faroe Islands">Faroe Islands</option>
-            <option value="Fiji">Fiji</option>
-            <option value="Finland">Finland</option>
-            <option value="France">France</option>
-            <option value="France Metropolitan">France, Metropolitan</option>
-            <option value="French Guiana">French Guiana</option>
-            <option value="French Polynesia">French Polynesia</option>
-            <option value="French Southern Territories">French Southern Territories</option>
-            <option value="Gabon">Gabon</option>
-            <option value="Gambia">Gambia</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Germany">Germany</option>
-            <option value="Ghana">Ghana</option>
-            <option value="Gibraltar">Gibraltar</option>
-            <option value="Greece">Greece</option>
-            <option value="Greenland">Greenland</option>
-            <option value="Grenada">Grenada</option>
-            <option value="Guadeloupe">Guadeloupe</option>
-            <option value="Guam">Guam</option>
-            <option value="Guatemala">Guatemala</option>
-            <option value="Guinea">Guinea</option>
-            <option value="Guinea-Bissau">Guinea-Bissau</option>
-            <option value="Guyana">Guyana</option>
-            <option value="Haiti">Haiti</option>
-            <option value="Heard and McDonald Islands">Heard and Mc Donald Islands</option>
-            <option value="Holy See">Holy See (Vatican City State)</option>
-            <option value="Honduras">Honduras</option>
-            <option value="Hong Kong">Hong Kong</option>
-            <option value="Hungary">Hungary</option>
-            <option value="Iceland">Iceland</option>
-            <option value="India">India</option>
-            <option value="Indonesia">Indonesia</option>
-            <option value="Iran">Iran (Islamic Republic of)</option>
-            <option value="Iraq">Iraq</option>
-            <option value="Ireland">Ireland</option>
-            <option value="Israel">Israel</option>
-            <option value="Italy">Italy</option>
-            <option value="Jamaica">Jamaica</option>
-            <option value="Japan">Japan</option>
-            <option value="Jordan">Jordan</option>
-            <option value="Kazakhstan">Kazakhstan</option>
-            <option value="Kenya">Kenya</option>
-            <option value="Kiribati">Kiribati</option>
-            <option value="Democratic People's Republic of Korea">Korea, Democratic People's Republic of</option>
-            <option value="Korea">Korea, Republic of</option>
-            <option value="Kuwait">Kuwait</option>
-            <option value="Kyrgyzstan">Kyrgyzstan</option>
-            <option value="Lao">Lao People's Democratic Republic</option>
-            <option value="Latvia">Latvia</option>
-            <option value="Lebanon">Lebanon</option>
-            <option value="Lesotho">Lesotho</option>
-            <option value="Liberia">Liberia</option>
-            <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
-            <option value="Liechtenstein">Liechtenstein</option>
-            <option value="Lithuania">Lithuania</option>
-            <option value="Luxembourg">Luxembourg</option>
-            <option value="Macau">Macau</option>
-            <option value="Macedonia">Macedonia, The Former Yugoslav Republic of</option>
-            <option value="Madagascar">Madagascar</option>
-            <option value="Malawi">Malawi</option>
-            <option value="Malaysia">Malaysia</option>
-            <option value="Maldives">Maldives</option>
-            <option value="Mali">Mali</option>
-            <option value="Malta">Malta</option>
-            <option value="Marshall Islands">Marshall Islands</option>
-            <option value="Martinique">Martinique</option>
-            <option value="Mauritania">Mauritania</option>
-            <option value="Mauritius">Mauritius</option>
-            <option value="Mayotte">Mayotte</option>
-            <option value="Mexico">Mexico</option>
-            <option value="Micronesia">Micronesia, Federated States of</option>
-            <option value="Moldova">Moldova, Republic of</option>
-            <option value="Monaco">Monaco</option>
-            <option value="Mongolia">Mongolia</option>
-            <option value="Montserrat">Montserrat</option>
-            <option value="Morocco">Morocco</option>
-            <option value="Mozambique">Mozambique</option>
-            <option value="Myanmar">Myanmar</option>
-            <option value="Namibia">Namibia</option>
-            <option value="Nauru">Nauru</option>
-            <option value="Nepal">Nepal</option>
-            <option value="Netherlands">Netherlands</option>
-            <option value="Netherlands Antilles">Netherlands Antilles</option>
-            <option value="New Caledonia">New Caledonia</option>
-            <option value="New Zealand">New Zealand</option>
-            <option value="Nicaragua">Nicaragua</option>
-            <option value="Niger">Niger</option>
-            <option value="Nigeria">Nigeria</option>
-            <option value="Niue">Niue</option>
-            <option value="Norfolk Island">Norfolk Island</option>
-            <option value="Northern Mariana Islands">Northern Mariana Islands</option>
-            <option value="Norway">Norway</option>
-            <option value="Oman">Oman</option>
-            <option value="Pakistan">Pakistan</option>
-            <option value="Palau">Palau</option>
-            <option value="Panama">Panama</option>
-            <option value="Papua New Guinea">Papua New Guinea</option>
-            <option value="Paraguay">Paraguay</option>
-            <option value="Peru">Peru</option>
-            <option value="Philippines">Philippines</option>
-            <option value="Pitcairn">Pitcairn</option>
-            <option value="Poland">Poland</option>
-            <option value="Portugal">Portugal</option>
-            <option value="Puerto Rico">Puerto Rico</option>
-            <option value="Qatar">Qatar</option>
-            <option value="Reunion">Reunion</option>
-            <option value="Romania">Romania</option>
-            <option value="Russia">Russian Federation</option>
-            <option value="Rwanda">Rwanda</option>
-            <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-            <option value="Saint LUCIA">Saint LUCIA</option>
-            <option value="Saint Vincent">Saint Vincent and the Grenadines</option>
-            <option value="Samoa">Samoa</option>
-            <option value="San Marino">San Marino</option>
-            <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-            <option value="Saudi Arabia">Saudi Arabia</option>
-            <option value="Senegal">Senegal</option>
-            <option value="Seychelles">Seychelles</option>
-            <option value="Sierra">Sierra Leone</option>
-            <option value="Singapore">Singapore</option>
-            <option value="Slovakia">Slovakia (Slovak Republic)</option>
-            <option value="Slovenia">Slovenia</option>
-            <option value="Solomon Islands">Solomon Islands</option>
-            <option value="Somalia">Somalia</option>
-            <option value="South Africa">South Africa</option>
-            <option value="South Georgia">South Georgia and the South Sandwich Islands</option>
-            <option value="Span">Spain</option>
-            <option value="SriLanka">Sri Lanka</option>
-            <option value="St. Helena">St. Helena</option>
-            <option value="St. Pierre and Miguelon">St. Pierre and Miquelon</option>
-            <option value="Sudan">Sudan</option>
-            <option value="Suriname">Suriname</option>
-            <option value="Svalbard">Svalbard and Jan Mayen Islands</option>
-            <option value="Swaziland">Swaziland</option>
-            <option value="Sweden">Sweden</option>
-            <option value="Switzerland">Switzerland</option>
-            <option value="Syria">Syrian Arab Republic</option>
-            <option value="Taiwan">Taiwan, Province of China</option>
-            <option value="Tajikistan">Tajikistan</option>
-            <option value="Tanzania">Tanzania, United Republic of</option>
-            <option value="Thailand">Thailand</option>
-            <option value="Togo">Togo</option>
-            <option value="Tokelau">Tokelau</option>
-            <option value="Tonga">Tonga</option>
-            <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-            <option value="Tunisia">Tunisia</option>
-            <option value="Turkey">Turkey</option>
-            <option value="Turkmenistan">Turkmenistan</option>
-            <option value="Turks and Caicos">Turks and Caicos Islands</option>
-            <option value="Tuvalu">Tuvalu</option>
-            <option value="Uganda">Uganda</option>
-            <option value="Ukraine">Ukraine</option>
-            <option value="United Arab Emirates">United Arab Emirates</option>
-            <option value="United Kingdom">United Kingdom</option>
-            <option value="United States">United States</option>
-            <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
-            <option value="Uruguay">Uruguay</option>
-            <option value="Uzbekistan">Uzbekistan</option>
-            <option value="Vanuatu">Vanuatu</option>
-            <option value="Venezuela">Venezuela</option>
-            <option value="Vietnam">Viet Nam</option>
-            <option value="Virgin Islands (British)">Virgin Islands (British)</option>
-            <option value="Virgin Islands (U.S)">Virgin Islands (U.S.)</option>
-            <option value="Wallis and Futana Islands">Wallis and Futuna Islands</option>
-            <option value="Western Sahara">Western Sahara</option>
-            <option value="Yemen">Yemen</option>
-            <option value="Yugoslavia">Yugoslavia</option>
-            <option value="Zambia">Zambia</option>
-            <option value="Zimbabwe">Zimbabwe</option>
-          </select>
+      <select id="citizenship" class="input-style" name="citizenship" oninput="this.className = ''">
+            
+      </select>
     </div>
     </div>
     <br>
@@ -415,7 +345,7 @@ function getCookie(key) {
     <div class="upload-box">
       <div id="hide">
         <label class="btn upload-btn">
-          <input type="file" name="file"/>
+          <input type="file" name="file" onchange="changeFile()" />
           <img src="img/icon-id.png" alt=""> &nbsp;Upload Your Passport
         </label>
       </div>
@@ -426,9 +356,7 @@ function getCookie(key) {
     <div style="text-align:center;">
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <button type="button" id="skipBtn" onclick="nextPrev(1)">Skip For Now</button>
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      <button type="button" id="submitBtn" onclick="nextPrev(1)">Next</button>
     </div>
     </div>
   </div>
@@ -506,7 +434,7 @@ function showTab(n) {
     document.getElementById("nextBtn").innerHTML = "Next";
   }
   //... and run a function that will display the correct step indicator:
-  fixStepIndicator(n)
+  fixStepIndicator(n);
 }
 
 function nextPrev(n) {
@@ -522,11 +450,10 @@ function nextPrev(n) {
   if (currentTab >= x.length - 1) {
     // ... the form gets submitted:
     document.getElementById("regForm").submit();
-	
-    return false;
+  } else {
+    showTab(currentTab);
   }
   // Otherwise, display the correct tab:
-  showTab(currentTab);
 }
 
 function validateForm() {
@@ -554,11 +481,18 @@ function validateForm() {
 function fixStepIndicator(n) {
   // This function removes the "active" class of all steps...
   var i, x = document.getElementsByClassName("step");
+  // alert(n + " : " + x.length);
   for (i = 0; i < x.length; i++) {
     x[i].className = x[i].className.replace(" active", "");
+    if(i < n) {
+        x[i].className += " finish";
+    }
+    
   }
   //... and adds the "active" class on the current step:
-  x[n].className += " active";
+  if (n < x.length) {
+    x[n].className += " active";
+  }
 }
 </script>
 

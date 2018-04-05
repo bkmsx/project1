@@ -75,16 +75,18 @@
       <h1>Sign In</h1>
       <div class="h-line h-line-small" style="display:inline-block;"></div>
       <form action="sign-in.php" method="post">
+        <label id="error" style="margin-top:10px; margin-bottom:10px; color:red; display:none;">* Email or password is not correct</label>
         <div class="clearfix">
-          <input type='email' class="input-style" name="email" placeholder="Email Address"/>
+          <input type='email' class="input-style" name="email" placeholder="Email Address" required/>
         </div>
         <div class="clearfix">
-          <input type='password' class="input-style" name="password" placeholder="Password"/>
+          <input type='password' class="input-style" name="password" placeholder="Password" style="width: 100%; height: 58px; border:none" required />
         </div>
+       
         <br>
-        <div style="float:left;"><p style="color:#ba933b;"><a href="sign-up.php">Register an account?</a></p></div>
+        <div style="float:left;"><p style="color:#ba933b; padding-top:20px;"><a href="sign-up.php">Register an account?</a></p></div>
         <div style="float:right">
-          <input type="submit" name="submit" class="btn light-btn" value="Login">
+          <input type="submit" name="submit" class="btn light-btn" value="Login" style="background-color:#CAA52D; font-weight:bold;">
         </div>
         <div style="clear:both;"></div>
       </form>

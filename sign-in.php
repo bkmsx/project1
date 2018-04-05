@@ -8,15 +8,17 @@ if(isset($_POST['submit'])) {
 		$result = mysqli_query($dbc, $query);
 		if (mysqli_num_rows($result) > 0){
 			$user = mysqli_fetch_array($result);
-			if ($password == $user['password']) {
-				echo "<br/> Sign-in successful!";
+			if (password_verify($password, $user['password'])){
+				echo "<br/> Sign-in successful!"; 
 				setcookie("email", $email);
 				header('Location: index.html');
 			} else {
-				echo "<br/> Password not right!";
+				include 'sign-in.html';
+				echo "<script type='text/javascript'>document.getElementById('error').style.display='block';</script>";
 			}
 		} else {
-			echo "<br/> Email doesn't exist.";
+			include 'sign-in.html';
+			echo "<script type='text/javascript'>document.getElementById('error').style.display='block';</script>";
 		}
 		mysqli_close($dbc);
 	} else {
