@@ -10,7 +10,10 @@ if(isset($_POST['submit'])) {
 			$user = mysqli_fetch_array($result);
 			if (password_verify($password, $user['password'])){
 				echo "<br/> Sign-in successful!"; 
-				setcookie("email", $email);
+				setcookie("email", $email, time() + 86400 * 365);
+				if (!empty($user['erc20_address'])){
+					setcookie("erc20_address", $user['erc20_address'], time() + 86400 * 365);
+				}
 				header('Location: index.html');
 			} else {
 				include 'sign-in.html';

@@ -31,9 +31,6 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 			}
 		} 
 	}
-	$sql_country = "select * from consentium_nationality where nationality = '".$_POST['citizenship']."'";
-	$result = mysqli_query($dbc, $sql_country);
-	$nation = mysqli_fetch_array($result);
 
 	$sql_max_id = "select * from consentium_user where email='".$_COOKIE['email']."'";
 	$result = mysqli_query($dbc, $sql_max_id);
@@ -50,8 +47,8 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 		"first_name"=>$fname,
 		"last_name"=>$lname,
 		"date_of_birth"=>$date_of_birth,
-		"nationality"=>$nation['nationality'],
-		"country_of_residence"=>$nation['country'],
+		"nationality"=>$_POST['citizenship'],
+		"country_of_residence"=>$_POST['country'],
 		"ssic_code"=>"UNKNOWN",
 		"ssoc_code"=>"UNKNOWN",
 		"onboarding_mode"=>"NON FACE-TO-FACE",
@@ -73,16 +70,17 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 	
 	// Update Google sheet
 	require_once('update-sheet.php');
-	updateSheet([$_COOKIE['email'], $fname." ".$lname, $date_of_birth, $nation['nationality'], date('d/m/Y h:i:s', time()), $status], $user['row_number']);
+	updateSheet([$_COOKIE['email'], $fname." ".$lname, $date_of_birth, $_POST['citizenship'], $_POST['country'], date('d/m/Y h:i:s', time()), $status, $_POST['erc20_address']], $user['row_number']);
 		
 	// Update database
 	$sql = "update consentium_user set first_name='"
 	.$_POST['fname']."', last_name='"
 	.$_POST['lname']."', date_birth='"
 	.$_POST['date_of_birth']."', citizenship='"
-	.$nation['nationality']."',country='"
-	.$nation['country']."', date=now(), status='"
-	.$status;
+	.$_POST['citizenship']."',country='"
+	.$_POST['country']."', date=now(), status='"
+	.$status."', erc20_address='"
+	.$_POST['erc20_address'];
 	
 	if(isset($_FILES['file']) && !empty($name) && !empty($tmp_name)) {
 		$sql = $sql."', passport_location='".$location;
@@ -90,13 +88,14 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 
 	$sql = $sql."' where email='".$_COOKIE['email']."'";
 	if(mysqli_query($dbc, $sql)){
-
+		setcookie("erc20_address", $_POST['erc20_address'], time() + 86400 * 365);
 		include 'step.html';
 		echo "<script type='text/javascript'> 
 			$(document).ready(function(){
 				var x = document.getElementsByClassName('tab'); x[0].style.display = 'none'; showTab(3); 
 			});
 		</script>";
+
 	} else {
 		echo 'Have error when update';
 	}
@@ -109,13 +108,19 @@ require_once('mysqli_connect.php');
 $sql = "select * from consentium_nationality";
 $result = mysqli_query($dbc, $sql);
 echo "<script type='text/javascript'>";
-echo "var selectBox = document.getElementById('citizenship');
+echo "var selectCitizenship = document.getElementById('citizenship');
+	var selectCountry = document.getElementById('country');
 	var option;";
 while ($nation = mysqli_fetch_array($result)){
   echo "option = document.createElement('option');";
-  echo "option.text = '".$nation['name']."';";
+  echo "option.text = \"".$nation['nationality']."\";";
   echo "option.value = \"".$nation['nationality']."\";";
-  echo "selectBox.add(option);";
+  echo "selectCitizenship.add(option);";
+  echo "option = document.createElement('option');";
+  echo "option.text = \"".$nation['country']."\";";
+  echo "option.value = \"".$nation['country']."\";";
+  echo "selectCountry.add(option);";
 }
+echo "$('#country option[value=' + country + ']').attr('selected','selected');";
 echo "$('#citizenship option[value=' + citizenship + ']').attr('selected','selected');</script>";
 ?>

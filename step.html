@@ -26,6 +26,7 @@
 <!-- Add sidemenu -->
 <script>
     var citizenship;
+    var country;
 (function($){
 	// Menu Functions
 	$(document).ready(function(){
@@ -49,18 +50,23 @@
         $('#fname').val(jsonObject.first_name);
         $('#lname').val(jsonObject.last_name);
         $('#date').val(jsonObject.date_birth);
+        $('#erc20_address').val(jsonObject.erc20_address);
         $('#citizenship option[value=' + jsonObject.citizenship + ']').attr('selected','selected');
+        $('#country option[value=' + jsonObject.country + ']').attr('selected','selected');
         if (jsonObject.passport_location == null) {
             $('#submitBtn').attr('disabled', 'disabled');
+            $('#nextBtn2').attr('disabled', 'disabled');
         }
         citizenship = jsonObject.citizenship;
+        country = jsonObject.country;
     });
   });
 })(jQuery);
 
 function logOut(){
     document.cookie = "email=";
-    window.open("index.html", "_self");
+    document.cookie = "erc20_address=";
+    window.open("index.php", "_self");
 }
 
 function getCookie(key) {
@@ -70,11 +76,38 @@ function getCookie(key) {
 
 function handleClickCheckbox() {
     var checkbox1 = document.getElementById("term1");
+    var checkbox2 = document.getElementById("term2");
     var button = document.getElementById("nextBtn");
-    if (checkbox1.checked){
+    if (checkbox1.checked && checkbox2.checked){
         button.disabled = false;
     } else {
         button.disabled = true;
+    }
+}
+
+function handleInput() {
+    var firstName = $('#fname').val();
+    var lastName = $('#lname').val();
+    var erc20Address = $('#erc20_address').val();
+    var date = $('#date').val();
+    if (firstName == '' || lastName == '' || erc20Address == '' || date == '') {
+        $('#nextBtn2').attr('disabled', 'disabled');
+    } else {
+        $('#nextBtn2').removeAttr('disabled');
+    }
+}
+
+function checkDate(){
+    var regex = /^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/g;
+    var date = $('#date').val();
+    if (regex.test(date)){
+        handleInput();
+        $('#date').css('background-color','#8e702b');
+        $('#date').removeAttr('title');
+    } else {
+        $('#date').prop('title', 'Date format: DD/MM/YYYY');
+        $('#date').css('background-color',' #cc0000');
+        $('#nextBtn2').attr('disabled', 'disabled');
     }
 }
 
@@ -90,7 +123,11 @@ button[disabled=disabled]{
   border: 1px solid #999999;
   background-color: #4f4634;
   color: #666666;
+},
+label {
+    color: grey;
 }
+
 </style>
 </head>
 
@@ -99,7 +136,7 @@ button[disabled=disabled]{
 <!------------ Navigation start ------------>
 <div id="header">
   <div class="container"> <span class="logo"><a href="#home">
-    <a href="index.html"><div id="logo"></div></a>
+    <a href="index.php"><div id="logo"></div></a>
     </a></span>
     <ul id="menu" style="margin-top: 15px;">
       <!-- <li><a href="#">About</a></li> -->
@@ -147,153 +184,16 @@ button[disabled=disabled]{
       <h1>Terms & Conditions</h1><div class="h-line" style="display:inline-block;"></div>
     </div>
     <br>
-    <div style="overflow-y: scroll;  width:100%; height: 400px;border:1px solid black; padding:10px; background-color: grey">
-      <p>
-        <h4>Overall</h4>
-        Entity “Asia Focus Group Pte Ltd” is the Company responsible for issuance of tokens.
-        <h4>Important Notice</h4>
-        The CONSENTIUM TOKENS are not securities or units in a collective investment scheme or
-        business trust, each as defined under Singapore’s Securities and Futures Act (Cap. 289)
-        (“<b>SFA</b>”). Accordingly, the SFA does not apply to the offer and sale of the CONSENTIUM
-        TOKENS. For the avoidance of doubt, this initial offering of CONSENTIUM TOKENS need
-        not be accompanied by any prospectus or profile statement and no prospectus or profile
-        statement needs to be lodged with the Monetary Authority of Singapore (“<b>MAS</b>”).
-        This [White Paper/Crowdsale Document/business deck] does not constitute an offer of, or an
-        invitation to purchase, the CONSENTIUM TOKENS in any jurisdiction in which such offer or
-        sale would be unlawful. No regulatory authority in Singapore, including the MAS, has
-        reviewed or approved or disapproved of the CONSENTIUM TOKENS or this [White
-        Paper/Crowdsale Document/business deck]. This [White Paper/Crowdsale
-        Document/business deck] and any part hereof may not be distributed or otherwise
-        disseminated in any jurisdiction where offering tokens in the manner set out this [White
-        Paper/Crowdsale Document/business deck] is regulated or prohibited.
-        The information in this [White Paper/Crowdsale Document/business deck] is current only as
-        of the date on the cover hereof. For any time after the cover date of this [White
-        Paper/Crowdsale Document/business deck], the information, including information
-        concerning Asia Focus Group Pte Ltd’s business operations and financial condition may
-        have changed. Neither the delivery of this [White Paper/Crowdsale Document/business
-        deck] nor any sale made in the related initial token offering shall, under any circumstances,
-        constitute a representation that no such changes have occurred. Asia Focus Group Pte Ltd
-        does not make or purport to make, and hereby disclaims, any representation, warranty,
-        undertaking, or other assurance in any form whatsoever to any person, including any
-        representations, warranties, undertakings, or other assurances in relation to the truth,
-        accuracy, or completeness of any part of the information in this[White Paper/Crowdsale
-        Document/business deck].
-        Whether taken as a whole or read in part, this [White Paper/Crowdsale Document/business
-        deck] is not, and should not be regarded as, any form of legal, financial, tax, or other
-        professional advice. You should seek independent professional advice before making your
-        own decision as to whether or not to purchase any CONSENTIUM TOKENS. You are
-        responsible for any and all evaluations, assessments, and decisions you make in relation to
-        investing in the CONSENTIUM TOKENS. You may request for additional information from
-        Asia Focus Group Pte Ltd in relation to this offer of CONSENTIUM TOKENS. Asia Focus
-        Group Pte Ltd may, but is not obliged to, disclose such information depending on whether (i)
-        it is legal to do so and (ii) the requested information is reasonably necessary to verify the
-        information contained in this [White Paper/Crowdsale Document/business deck].
-        CONSENTIUM TOKENS are intended for use within applications available on the Asia
-        Focus Group Pte Ltd Network for purposes stated in the White Paper and Asia Focus Group
-        Pte Ltd warrants that the CONSENTIUM TOKENS are fit for these purposes.
-        However, Asia Focus Group Pte Ltd is not responsible for compelling any person to accept
-        CONSENTIUM TOKENS and disclaims, to the fullest extent permitted by law, all liability for
-        any adverse consequences arising out of or in relation to such rejections of CONSENTIUM
-        TOKENS.
-        Upon purchasing any CONSENTIUM TOKENS, you will be deemed to have reviewed this
-        [White Paper/Crowdsale Document] (and any information requested and obtained from Asia
-        Focus Group Pte Ltd) in full and to have agreed to the terms of this offering of
-        CONSENTIUM TOKENS, including to the fact that this offering does not fall within the scope
-
-        of any securities laws in Singapore and is not regulated by the MAS. You further
-        acknowledge and agree that the CONSENTIUM TOKENS are not securities and are not
-        meant to generate any form of investment return.
-        The CONSENTIUM TOKENS and related services provided by Asia Focus Group Pte Ltd (if
-        any) are provided on an “as is” and “as available” basis. Asia Focus Group Pte Ltd does not
-        grant any warranties or make any representation, express or implied or otherwise, as to the
-        accessibility, quality, suitability, accuracy, adequacy, or completeness of the CONSENTIUM
-        TOKENS or any related services provided by Asia Focus Group Pte Ltd, and expressly
-        disclaims any liability for errors, delays, or omissions in, or for any action taken in reliance
-        on, the CONSENTIUM TOKENS and related services provided by Asia Focus Group Pte
-        Ltd. No warranty, including the warranties of non-infringement of third party rights, title,
-        merchantability, satisfactory quality, or fitness for a particular purpose, is given in
-        conjunction with the CONSENTIUM TOKENS and any related services provided by Asia
-        Focus Group Pte Ltd.
-        <h4>Token Disclaimer</h4>
-        The Consentium Coin tokens are not securities under Singapore’s Securities and Futures
-        Act  (Cap 289) (“SFA”).  They grant holders access to certain services within the
-        Consentium ChatApp ecosystem.  They are utility tokens whose entire value derives from
-        the services provided by the Consentium ChatApp Network in exchange for holding or
-        consumption of the tokens, as detailed here. They are not intended for speculation and hold
-        no rights to intellectual or other property or cash flows.  They are not equities, as they do not
-        provide any fractional ownership rights in the company and no claim in decision making over
-        company assets or strategy. There is no promise of value or claim on revenue associated
-        with the Consentium Coin tokens, similar to debentures, other than that derived from
-        platform usage. In short, PPN tokens are not equities, debentures or any form of securities
-        as defined under the SFA.
-        <h4>Regulatory Risks</h4>
-        The regulation of tokens such as the CONSENTIUM TOKENS is still in a very nascent stage
-        of development in Singapore. A high degree of uncertainty as to how tokens and token-
-        related activities are to be treated exists. The applicable legal and regulatory framework may
-        change subsequent to the date of issuance of this [White Paper/Crowdsale Document].
-        Such change may be very rapid and it is not possible to anticipate with any degree of
-        certainty the nature of such regulatory evolution. Asia Focus Group Pte Ltd does not in any
-        way represent that the regulatory status of the CONSENTIUM TOKENS will remain
-        unaffected by any regulatory changes that arise at any point in time before, during, and after
-        this offering.
-        <h4>Tax Risks</h4>
-        The tax characterization of CONSENTIUM TOKENS is unclear. Accordingly, the tax
-        treatment to which they will be subject is uncertain. All persons who wish to purchase
-        CONSENTIUM TOKENS should seek independent tax advice prior to deciding whether to
-        purchase any CONSENTIUM TOKENS. Asia Focus Group Pte Ltd does not make any
-        representation as to whether any tax consequences may arise from purchasing or holding
-        CONSENTIUM TOKENS.
-        <h4>Risk From Third Parties</h4>
-
-        The tokenised nature of CONSENTIUM TOKENS means that they are a blockchain-based
-        asset. The security, transferability, storage, and accessibility of blockchain assets depends
-        on factors outside of Asia Focus Group Pte Ltd’s control, such as the security, stability, and
-        suitability of the underlying blockchain (in this case, the Ethereum blockchain), mining
-        attacks, and who has access to the private key of a wallet where CONSENTIUM TOKENS
-        are stored. Asia Focus Group Pte Ltd is unable to assure that it can prevent such external
-        factors from having any direct or indirect adverse impact on any of the CONSENTIUM
-        TOKENS. Persons intending to purchase CONSENTIUM TOKENS should note that adverse
-        events caused by such external factors may results in the loss of some or all CONSENTIUM
-        TOKENS purchased. Such loss may be irreversible. Asia Focus Group Pte Ltd is not
-        responsible for taking steps to retrieve CONSENTIUM TOKENS lost in this manner.
-        <h4>Risks in purchasing CONSENTIUM TOKENS</h4>
-        Asia Focus Group Pte Ltd cannot and does not guarantee or otherwise assure that there are
-        no risks in relation to your purchase of CONSENTIUM TOKENS. The purchase of
-        CONSENTIUM TOKENS may, depending on the manner in which the relevant purchase is
-        effected, involve third parties or external platforms (e.g., wallets). The involvement of such
-        parties or platforms may introduce risks that would not otherwise be present, such as
-        misconduct or fraud by the third party, or your failure to receive CONSENTIUM TOKENS
-        upon duly making payment because of a third-party wallet’s incompatibility with
-        CONSENTIUM TOKENS. Asia Focus Group Pte Ltd is not responsible for any risks arising
-        due to the involvement of third parties, including the risk of not receiving (or subsequently
-        losing) any or all CONSENTIUM TOKENS you attempt to (or successfully) purchase.
-        <h4>Disclaimer [Private Investor Deck]</h4>
-        The information and opinions in this presentation are for general guidance only. The
-        information in this presentation does not contain all of the information that may be required
-        to evaluate a purchase of CONSENTIUM TOKENS. Persons considering investing in
-        CONSENTIUM TOKENS are responsible for conducting their own due diligence on Asia
-        Focus Group Pte Ltd and the CONSENTIUM TOKENS, and should ensure that they
-        understand and are able to bear the risks of investing in CONSENTIUM TOKENS, including
-        the risk of losing part or all of their investment.
-        The information and opinions in this presentation are, unless otherwise stated, current as of
-        the date of this presentation. Asia Focus Group Pte Ltd  (“<b>Asia Focus Group Pte Ltd</b>”) are
-        not obliged to update or revise any information or the opinions expressed in this presentation
-        as a result of new information, events occurring after the date of this presentation, or
-        otherwise.
-        Certain statements made in this presentation may not be based on historical information or
-        facts and may be “forward-looking statements”, including those relating to: (i) general
-        business plans, timelines, and strategy; (ii) adoption projections; and (iii) developments in
-        the industry, markets, or the competitive or regulatory environment. Actual results may differ
-        materially from these forward-looking statements due to a number of factors, including future
-        changes or developments in business, the competitive environment, or political, economic,
-        legal, and social conditions.
-      </p>
-    </div>
+    
     <div class="clearfix">
       <table>
         <tr valign="top">
           <td class="radio-btn"><input type="checkbox" id="term1" onclick="handleClickCheckbox()" value="value1" oninput="this.className = ''"></td>
-          <td ><b>I agree with the terms and conditions.</b></td>
+          <td style="padding-bottom: 30px; font-size: 20px;">I have read the <a href="terms-conditions.html" target="_blank"><b>Token Sale Terms & Conditions</b></a>, Privacy Policy and Jibrel Network White Paper, and accept all terms, conditions, obligations, affirmations, representations and warranties outlined in these documents and agree to adhere to them and be legally bound by them.</td>
+        </tr>
+        <tr valign="top">
+          <td class="radio-btn"><input type="checkbox" id="term2" onclick="handleClickCheckbox()" value="value2" oninput="this.className = ''"></td>
+          <td style="padding-bottom: 30px;font-size: 20px;">I confirm that I am not citizen, permanent resident, or granted indefinite leave to remain in the United States or any jurisdiction in which the purchase of Jibrel Network Token (JNT) is explicitly prohibited or outlawed.</td>
         </tr>
       </table>
     </div>
@@ -314,16 +214,30 @@ button[disabled=disabled]{
     <br>
     <div class="row">
     <div class="col-md-6 v-pad">
-      <input id="fname" type="text" class="input-style" placeholder="First name..." name="fname">
+      <label style="color: #f5dca5">First Name</label>
+      <input id="fname" type="text" class="input-style" placeholder="" name="fname" oninput="handleInput()">
     </div>
     <div class="col-md-6 v-pad">
-      <input id="lname" type="text" class="input-style" placeholder="Last name..." name="lname">
+        <label style="color: #f5dca5">Last Name</label>
+      <input id="lname" type="text" class="input-style" placeholder="" name="lname" oninput="handleInput()">
     </div>
     <div class="col-md-6 v-pad">
-      <input id="date" name="date_of_birth" type='text' id="datepicker" class="input-style calendar"  placeholder="DD/MM/YYYY" value=""  />
+        <label style="color: #f5dca5">Date Of Birth</label>
+      <input id="date" name="date_of_birth" type='text' id="datepicker" class="input-style calendar"  placeholder="DD/MM/YYYY" value="" oninput="checkDate()"/>
     </div>
     <div class="col-md-6 v-pad">
+        <label style="color: #f5dca5">Citizenship</label>
       <select id="citizenship" class="input-style" name="citizenship" oninput="this.className = ''">
+            
+      </select>
+    </div>
+    <div class="col-md-6 v-pad">
+        <label style="color: #f5dca5">ERC20 Wallet Address</label>
+      <input id="erc20_address" name="erc20_address" class="input-style" type='text'  placeholder="" value=""  oninput="handleInput()"/>
+    </div>
+    <div class="col-md-6 v-pad">
+        <label style="color: #f5dca5">Country Of Residency</label>
+      <select id="country" class="input-style" name="country" oninput="this.className = ''">
             
       </select>
     </div>
@@ -333,7 +247,7 @@ button[disabled=disabled]{
     <div style="overflow:auto;">
     <div style="text-align:center;">
       <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-      <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      <button type="button" id="nextBtn2" onclick="nextPrev(1)">Next</button>
     </div>
   </div>
   </div>

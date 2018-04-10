@@ -61,7 +61,17 @@ function getCookie(key) {
 
 function logOut(){
     document.cookie = "email=";
-    window.open("index.html", "_self");
+    document.cookie = "erc20_address=";
+    window.open("index.php", "_self");
+}
+
+function getToken(){
+  if(getCookie('erc20_address') == '') {
+    window.open("step.php", "_self");
+  } else {
+    window.open("dash-board.html", "_self");
+  }
+  return false;
 }
 </script>
 
@@ -72,7 +82,7 @@ function logOut(){
 <!------------ Navigation start ------------>
 <div id="header">
   <div class="container"> <span class="logo"><a href="#home">
-    <a href="index.html"><div id="logo"></div></a>
+    <a href="index.php"><div id="logo"></div></a>
     </a></span>
     <ul id="menu" class="login">
       <!-- <li><a href="">About</a></li> -->
@@ -136,7 +146,7 @@ function logOut(){
     <br>
     <br>
     <br>
-    <a href="step.php" target="_self" class="btn light-btn">Get Tokens</a>
+    <button onclick="getToken()" target="_self" class="btn light-btn">Get Tokens</button>
       </div>
     </div>
   </div>

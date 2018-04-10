@@ -25,7 +25,7 @@ if (isset($_POST['submit'])) {
 		$sql_update = "insert into consentium_user (email, password, date, row_number) values 
 		('$email', '$encrypt_pass', now(), '$row_number')";
 		if (mysqli_query($dbc, $sql_update)) {
-			setcookie("email", $email);
+			setcookie("email", $email, time() + 86400 * 365);
 			header('Location: step.php');
 		} else {
 			echo "Error: ".mysqli_error($dbc);
