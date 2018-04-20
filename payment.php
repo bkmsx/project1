@@ -190,7 +190,7 @@ function submitSummary(){
       </div>
       <br>
       <br>
-      <span class="small-font">If you would like to change the destination wallet, please send an email to <a href="mailto:support@consentium.net" style="color:#ba933b;">support@consentium.net</a></span>
+      <span class="small-font">If you would like to change the destination wallet, please send an email to <a href="mailto:hello@consentium.net" style="color:#ba933b;">hello@consentium.net</a></span>
     </div>
   </div>
 </div>
