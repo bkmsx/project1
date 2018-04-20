@@ -177,7 +177,7 @@ function submitForm(){
       <h2 style="color:#ba933b;"><?php echo $_POST['consentium_amount'] ?> Consentium Coin</h2>
       <br>
       <br>
-      <p style="color:#fff;">You will receive a confirmation email once the transaction is validated (this may take up to a few hours). We may email you with a request for KYC documents. If we do not receive your documentation, your funds will be returned to your wallet.</p>
+      <p style="color:#fff;">You will receive a confirmation email once the transaction is validated (this may take up to a few hours). We may email you with a request for KYC documents.</p>
       <br>
       <br>
       <br>
