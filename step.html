@@ -44,22 +44,24 @@
   	});
     var name = getCookie('email').split('%');
     document.getElementById("greeting").innerHTML = "Hi, " + name[0];
-    var user_email = getCookie('email').replace("%40", "@");
-    $.get("user-detail.php", {email:user_email}, function(data) {
-        var jsonObject = JSON.parse(data);
-        $('#fname').val(jsonObject.first_name);
-        $('#lname').val(jsonObject.last_name);
-        $('#date').val(jsonObject.date_birth);
-        $('#erc20_address').val(jsonObject.erc20_address);
-        $('#citizenship option[value=' + jsonObject.citizenship + ']').attr('selected','selected');
-        $('#country option[value=' + jsonObject.country + ']').attr('selected','selected');
-        if (jsonObject.passport_location == null) {
-            $('#submitBtn').attr('disabled', 'disabled');
-            $('#nextBtn2').attr('disabled', 'disabled');
-        }
-        citizenship = jsonObject.citizenship;
-        country = jsonObject.country;
-    });
+    $('#submitBtn').attr('disabled', 'disabled');
+    $('#nextBtn2').attr('disabled', 'disabled');
+    // var user_email = getCookie('email').replace("%40", "@");
+    // $.get("user-detail.php", {email:user_email}, function(data) {
+    //     var jsonObject = JSON.parse(data);
+    //     $('#fname').val(jsonObject.first_name);
+    //     $('#lname').val(jsonObject.last_name);
+    //     $('#date').val(jsonObject.date_birth);
+    //     $('#erc20_address').val(jsonObject.erc20_address);
+    //     $('#citizenship option[value=' + jsonObject.citizenship + ']').attr('selected','selected');
+    //     $('#country option[value=' + jsonObject.country + ']').attr('selected','selected');
+    //     if (jsonObject.passport_location == null) {
+    //         $('#submitBtn').attr('disabled', 'disabled');
+    //         $('#nextBtn2').attr('disabled', 'disabled');
+    //     }
+    //     citizenship = jsonObject.citizenship;
+    //     country = jsonObject.country;
+    // });
   });
 })(jQuery);
 
@@ -189,11 +191,11 @@ label {
       <table>
         <tr valign="top">
           <td class="radio-btn"><input type="checkbox" id="term1" onclick="handleClickCheckbox()" value="value1" oninput="this.className = ''"></td>
-          <td style="padding-bottom: 30px; font-size: 20px;">I have read the <a href="terms-conditions.html" target="_blank"><b>Token Sale Terms & Conditions</b></a>, Privacy Policy and Jibrel Network White Paper, and accept all terms, conditions, obligations, affirmations, representations and warranties outlined in these documents and agree to adhere to them and be legally bound by them.</td>
+          <td style="padding-bottom: 30px; font-size: 20px;">I have read the <a href="terms-conditions.html" target="_blank"><b>Token Sale Terms & Conditions</b></a>, Privacy Policy and Consentium White Paper, and accept all terms, conditions, obligations, affirmations, representations and warranties outlined in these documents and agree to adhere to them and be legally bound by them.</td>
         </tr>
         <tr valign="top">
           <td class="radio-btn"><input type="checkbox" id="term2" onclick="handleClickCheckbox()" value="value2" oninput="this.className = ''"></td>
-          <td style="padding-bottom: 30px;font-size: 20px;">I confirm that I am not citizen, permanent resident, or granted indefinite leave to remain in the United States or any jurisdiction in which the purchase of Jibrel Network Token (JNT) is explicitly prohibited or outlawed.</td>
+          <td style="padding-bottom: 30px;font-size: 20px;">I confirm that I am not citizen, permanent resident, or granted indefinite leave to remain in the United States or any jurisdiction in which the purchase of Consentium coins (CSM) is explicitly prohibited or outlawed.</td>
         </tr>
       </table>
     </div>
@@ -287,7 +289,7 @@ label {
     <br>
     <br>
     <br>
-    <a href="index.html" class="btn dark-btn">Go To Dashboard</a>
+    <a href="index.php" class="btn dark-btn">Go To Dashboard</a>
     </div>
   </div>
   

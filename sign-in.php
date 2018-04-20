@@ -13,8 +13,9 @@ if(isset($_POST['submit'])) {
 				setcookie("email", $email, time() + 86400 * 365);
 				if (!empty($user['erc20_address'])){
 					setcookie("erc20_address", $user['erc20_address'], time() + 86400 * 365);
+					setcookie("last_name", $user['last_name'], time() + 86400 * 365);
 				}
-				header('Location: index.html');
+				header('Location: index.php');
 			} else {
 				include 'sign-in.html';
 				echo "<script type='text/javascript'>document.getElementById('error').style.display='block';</script>";

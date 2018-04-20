@@ -1,26 +1,25 @@
 <?php
-  if (!isset($_COOKIE['email']) || isset($_COOKIE['email']) && $_COOKIE['email'] == "") {
-    header('Location: sign-in.php');
-    exit;
-  }
-
-  if (!isset($_COOKIE['erc20_address']) || isset($_COOKIE['erc20_address']) && $_COOKIE['erc20_address'] == "") {
-    header('Location: step.php');
-    exit;
-  }
-
+  require_once('mysqli_connect.php');
+  require_once('send-mail.php');
   $user_email = $_COOKIE['email'];
   $user_email = str_replace("%40", "@", $user_email);
-  require_once("mysqli_connect.php");
-  $user_sql = "select * from consentium_user where email = '$user_email'";
-  $user_result = mysqli_query($dbc, $user_sql);
-  $user = mysqli_fetch_array($user_result);
+  $update_history_sql = "insert into consentium_transaction (user_email, currency, amount, address, 
+  consentium_amount, status, date, conversion_rate) values ('"
+  .$user_email."','"
+  .$_POST['currency']."','"
+  .$_POST['amount']."','"
+  .$_POST['address']."','"
+  .$_POST['consentium_amount']."', 'Waiting', now(),'"
+  .$_POST['conversion_rate']."')";
+  sendMail($user_email, getApplyTransactionTitle(), getApplyTransactionMessage($_COOKIE['last_name']));
+mysqli_query($dbc, $update_history_sql);
+mysqli_close($dbc);
 ?>
 <!doctype html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Consentium - Dashboard</title>
+<title>Consentium - Payment Selection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Bootstrap & Jquery -->
@@ -32,12 +31,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <link href="style.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
-<link rel="stylesheet" type="text/css" href="jquery.flipcountdown.css"/>
+<link rel="stylesheet" type="text/css" href="jquery.flipcountdown.css" />
 <link href="sidemenu.css" rel="stylesheet">
 <link href="magnific-popup.css" rel="stylesheet">
 <link href="media-queries.css" rel="stylesheet">
@@ -47,7 +46,6 @@
 <!-- Start of consentium Zendesk Widget script -->
 <script>/*<![CDATA[*/window.zE||(function(e,t,s){var n=window.zE=window.zEmbed=function(){n._.push(arguments)}, a=n.s=e.createElement(t),r=e.getElementsByTagName(t)[0];n.set=function(e){ n.set._.push(e)},n._=[],n.set._=[],a.async=true,a.setAttribute("charset","utf-8"), a.src="https://static.zdassets.com/ekr/asset_composer.js?key="+s, n.t=+new Date,a.type="text/javascript",r.parentNode.insertBefore(a,r)})(document,"script","aace7492-2999-420e-89fd-ec853f818169");/*]]>*/</script>
 <!-- End of consentium Zendesk Widget script -->
-
 
 <style>
 .white-popup {
@@ -108,21 +106,8 @@ function logOut(){
     document.cookie = "erc20_address=";
     window.open("sign-in.php", "_self");
 }
-
-function purchase() {
-  form = document.getElementById("form_amount");
-  form.submit();
-}
 </script>
 
-<style type="text/css">
-button:disabled,
-button[disabled=disabled]{
-  border: 1px solid #999999;
-  background-color: #EEBE5F;
-  color: #666666;
-}
-</style>
 </head>
 
 <body>
@@ -138,7 +123,7 @@ button[disabled=disabled]{
     </ul>
     <nav> 
       <a href="" id="menuToggle" title="show menu"> <span class="navClosed"></span> </a>
-      <a href="index.html" class="token-btn">Log out</a>
+      <a href="index.php" class="token-btn">Log out</a>
       <a href="">Hi, John</a>
     </nav>
   </div>
@@ -148,75 +133,21 @@ button[disabled=disabled]{
 
 <div class="setting-banner" style="text-align:center;">
   <div class="container">
-    <h1>Dashboard</h1>
+    <h1>Thank You For<br>Your Purchase</h1>
     <div class="h-line" style="display:inline-block;"></div>
   </div>
 </div>
 
-<div id="settings">
+<div id="settings" class="transaction">
   <div class="container">
     <div class="settings-container">
-      <div class="row">
-        <div class="col-md-3 col-sm-3 v-pad purchase-text">
-          <p>Purchase Amount:</p>
-        </div>
-        <form action="payment.php" method="POST" id="form_amount">
-          <div class="col-md-9 col-sm-9 v-pad">
-            <input type="text" name="consentium_amount" class="input-style" value="10">
-          </div>
-          <div class="col-md-3 col-sm-3 v-pad purchase-text">
-            <p>Your Wallet Address:</p>
-          </div>
-          <div class="col-md-9 col-sm-9 v-pad">
-            <input type="text" name="address" class="input-style wallet-address" value="03249mcnh238hf89wqjd092iij20fh793g7c3c2" id="myInput">
-            <button onclick="myFunction()" class="btn-copy"><i class="fa fa-copy" aria-hidden="true"></i></button>
-            <div style="clear:both;"></div>
-          </div>
-        </form>
-        <label id="error_lbl" style="color: red" <?php if($user['status'] == "CLEARED") echo "hidden"; ?>>*Your account has not been approved yet</label>
-        <div class="col-md-12 col-sm-12 v-pad">
-          <button id="purchase_btn" onclick="purchase()" class="btn light-btn" <?php if($user['status'] != "CLEARED") echo "disabled"; ?>>Purchase</button>
-        </div>
-      </div>
+      <h2>Your transaction will be verified within 48 hours</h2>
       <br>
       <br>
-      <span class="small-font">If you would like to change the destination wallet, please send an email to <a href="mailto:support@consentium.net" style="color:#ba933b;">support@consentium.net</a></span>
-    </div>
-    <div style="background:#4d3f1f; height:1px; width:100%; margin:60px 0;"></div>
-    <h2 style="font-weight:700;">Transaction History</h2>
-    <div class="h-line" style="display:inline-block;"></div>
-    <br>
-    <br>
-    <div style="overflow-x:auto;">
-    <table>
-            <tr valign="center">
-              <th>DATE</th>
-              <th>CURRENCY</th>
-              <th>AMOUNT</th>
-              <th>ADDRESS</th>
-              <th>CONSENTIUM AMOUNT</th>
-              <th>CONSENTIUM BONUS</th>
-              <th>CONVERSION RATE</th>
-              <th>STATUS</th>
-            </tr>
-<?php 
-  $transaction_history_sql = "select * from consentium_transaction where user_email = '$user_email' order by date desc";
-  $result = mysqli_query($dbc, $transaction_history_sql);
-  while ($transaction = mysqli_fetch_array($result)){
-    echo "<tr>";
-    echo "<td>".$transaction['date']."</td>";
-    echo "<td>".$transaction['currency']."</td>";
-    echo "<td>".$transaction['amount']."</td>";
-    echo "<td>".$transaction['address']."</td>";
-    echo "<td>".$transaction['consentium_amount']."</td>";
-    echo "<td>".$transaction['consentium_bonus']."</td>";
-    echo "<td>".$transaction['conversion_rate']."</td>";
-    echo "<td>".$transaction['status']."</td>";
-    echo "</tr>";
-  }
-  mysqli_close($dbc);
-?>          
-          </table>
+      <a href="index.php" class="btn light-btn">DASHBOARD</a>
+      <br>
+      <br>
+      <span class="small-font">you’ll be redirected to the dashboard shortly, <a href="dash-board.php" style="color:#ba933b;">click here</a> if nothing happens</span>
     </div>
   </div>
 </div>

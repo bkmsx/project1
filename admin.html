@@ -42,15 +42,24 @@ label {
 	text-align: center;
 	margin-bottom: 15px;
 }
+
+div {
+	margin-left: auto;
+	margin-right: auto;
+}
 </style>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 <body>
 	<h1>Login panel</h1>
 	<label id="error" style="display: none; color: red;">* Username or password are not correct</label>
+	<label id="error_captcha" style="display: none; color: red;">* Please check captcha</label>
 	<form action="admin.php" method="POST">
 		<input type="text" name="user" placeholder="User name"><br/><br/>
 		<input type="password" name="password" placeholder="Password"><br/><br/>
+		<div class="g-recaptcha" data-sitekey="6LfvZlMUAAAAAF8Bp7HX4UYqo38r8691b3chB-Wz"></div><br/><br/>
 		<input type="submit" name="submit" value="Login">
 	</form>
+
 </body>
 </html>

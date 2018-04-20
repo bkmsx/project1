@@ -29,7 +29,7 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-h2 {font-family: 'Montserrat', sans-serif; font-size:30px; color:#fff; letter-spacing:1px; padding:0; margin:0; text-transform:uppercase; font-weight:400;}
+h2 {font-family: 'Montserrat', sans-serif; font-size:30px; color:#fff; letter-spacing:1px; padding:0; margin:0; text-transform:uppercase; font-weight:400; line-height:1.3;}
 h3 {font-family: 'Montserrat', sans-serif; font-size:20px; color:#fff; font-weight:400; letter-spacing:1px; padding:0; margin:0; text-transform:uppercase; line-height:1.5;}
 h4 {font-family: 'Source Sans Pro', sans-serif; font-size:20px; color:#fff; font-weight:400; line-height:30px;}
 
@@ -407,7 +407,6 @@ table {
 	font-size:14px;
 	font-weight:700;
 	width:100%; 
-	max-width:555px;
 	text-align:center;
 	letter-spacing:1px;
 }
@@ -766,7 +765,7 @@ input.invalid {
   display: none;
 }
 
-button {
+.step-bg2 button {
   color:#b28c36;
 text-align:center;
 background:#2a251a;
@@ -921,9 +920,116 @@ display:none;
 
 }
 
-button:disabled,
-button[disabled=disabled]{
-  border: 1px solid #999999;
-  background-color: #cccccc;
-  color: #666666;
+/* ------------------------------------------------------------------
+User settings page
+------------------------------------------------------------------- */
+
+.setting-banner {
+    background: url(img/bannerpage.jpg) top no-repeat;
+    background-size: cover;
+    position: relative;
+    height:300px;
+	padding-top:135px;
+	box-sizing:border-box;
+}
+
+#settings {
+	background: url(img/bg-getnotified.jpg) bottom no-repeat;
+	background-size:100%;
+	background-color:#342c19;
+    position:relative;
+	padding:90px 0;
+	text-align:center;
+	box-sizing:border-box;
+	min-height:480px;
+}
+
+.settings-container {
+	width:750px;
+	margin:0 auto;
+}
+
+#settings input[type="text"], #notify input[type="email"]
+{
+  background: #2a2314;
+  line-height:140%;  
+  border:none !important;
+  color:#888;
+}
+
+#settings button[type="submit"]
+{  
+color:#fff;
+text-align:center;
+background:#ba933b;
+}
+
+#settings button[type="submit"]:hover
+{  
+  background-color:#fff;
+  color:#ba933b;
+}
+
+.purchase-text {
+	margin-top:20px;
+	text-align:left;
+}
+
+.wallet-address {
+	width:495px !important;
+	float:left;
+}
+
+.btn-copy {
+	background: #47391c;
+	width:60px;
+	height:60px;
+	float:left;
+	text-align:center;
+	border:none;
+}
+
+#settings table {
+	text-align:left;
+}
+
+#settings th {
+	background:#645125; 
+	color:#efe3c9; 
+	padding:15px;
+	text-align:left;
+}
+
+th h4 {color:#000;}
+
+#settings td {
+	padding:15px;
+	background:#4f4120;
+	border-bottom:1px solid #41361c;
+	color:#837c6c;
+	font-weight:400;
+}
+
+
+.payment .wallet-address {
+	width:429px !important;
+	float:left;
+}
+
+.radio-payment {
+	margin-top:20px;
+	text-align:left;
+}
+
+.transaction h2 {
+	text-transform:none;
+	font-weight:600;
+}
+
+.transaction img {max-width:250px;}
+
+.transaction .wallet-address {
+	width:690px !important;
+	float:left;
+	text-align:center;
 }

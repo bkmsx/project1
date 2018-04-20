@@ -1,13 +1,25 @@
+<?php
+require_once('request_api.php');
+$url = "https://api.coinmarketcap.com/v1/ticker/ethereum/";
+$result_json = callAPI("GET", $url);
+$result_object = json_decode($result_json);
+$ethereum_price = $result_object[0]->price_usd;
+$amount = $_POST['consentium_amount'];
+?>
 <!doctype html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Consentium - Token Sale</title>
+<title>Consentium - Payment Selection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <!-- Bootstrap & Jquery -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700" rel="stylesheet">
@@ -17,12 +29,41 @@
 <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
 <link rel="stylesheet" type="text/css" href="jquery.flipcountdown.css" />
 <link href="sidemenu.css" rel="stylesheet">
+<link href="magnific-popup.css" rel="stylesheet">
 <link href="media-queries.css" rel="stylesheet">
 
-<script type="text/javascript" src="js/jquery.flipcountdown.js"></script>
-<script src="https://use.typekit.net/bkt6ydm.js"></script>
-<script>try{Typekit.load({ async: true });}catch(e){}</script>
+<script src="js/jquery.magnific-popup.min.js"></script>
 
+<style>
+.white-popup {
+	position: relative;
+	background: #252015;
+	width: auto;
+	max-width: 750px;
+	margin: 25px auto;
+	padding: 50px 25px;
+}
+.white-popup ul li {
+	margin: 5px 0;
+}
+.mfp-bg {
+	background: #ba933b;
+}
+.mfp-close-btn-in .mfp-close {
+	color: #ba933b;
+}
+.mfp-close {
+	font-size: 36px;
+}
+.mfp-content h2 {
+	color: #ba933b;
+}
+.mfp-content p {color:#837c6c;}
+</style>
+
+<!-- Start of consentium Zendesk Widget script -->
+<script>/*<![CDATA[*/window.zE||(function(e,t,s){var n=window.zE=window.zEmbed=function(){n._.push(arguments)}, a=n.s=e.createElement(t),r=e.getElementsByTagName(t)[0];n.set=function(e){ n.set._.push(e)},n._=[],n.set._=[],a.async=true,a.setAttribute("charset","utf-8"), a.src="https://static.zdassets.com/ekr/asset_composer.js?key="+s, n.t=+new Date,a.type="text/javascript",r.parentNode.insertBefore(a,r)})(document,"script","aace7492-2999-420e-89fd-ec853f818169");/*]]>*/</script>
+<!-- End of consentium Zendesk Widget script -->
 
 <!-- Add sidemenu -->
 <script>
@@ -41,16 +82,8 @@
 			}, 200);
     	e.preventDefault();
   	});
-    if(getCookie('email') == '') {
-      $(".logout").hide();
-      $(".login").show();
-    } else {
-      $(".login").hide();
-      $(".logout").show();
-      var name = getCookie('email').split('%');
-      document.getElementById("greeting").innerHTML = "Hi, " + name[0];
-    }
-
+    var name = getCookie('email').split('%');
+    document.getElementById("greeting").innerHTML = "Hi, " + name[0];
   });
 })(jQuery);
 
@@ -62,17 +95,29 @@ function getCookie(key) {
 function logOut(){
     document.cookie = "email=";
     document.cookie = "erc20_address=";
-    window.open("index.php", "_self");
+    window.open("sign-in.php", "_self");
 }
 
-function getToken(){
-  if(getCookie('erc20_address') == '') {
-    window.open("step.php", "_self");
+function countPayment(){
+  var ethereum_price = "<?php Print($ethereum_price) ?>"
+  token_input = document.getElementById("consentium_amount");
+  amount_input = document.getElementById("amount");
+  eth_checkbox = document.getElementById("eth");
+  conversion_rate = document.getElementById("conversion_rate");
+  if (eth_checkbox.checked) {
+    amount_input.value = token_input.value * 0.25 / ethereum_price;
+    conversion_rate.value = 0.25 / ethereum_price;
   } else {
-    window.open("dash-board.html", "_self");
-  }
-  return false;
+    amount_input.value = token_input.value * 0.25;
+    conversion_rate.value = 0.25;
+  }  
 }
+
+function submitSummary(){
+  form = document.getElementById("form_payment");
+  form.submit();
+}
+
 </script>
 
 </head>
@@ -84,116 +129,72 @@ function getToken(){
   <div class="container"> <span class="logo"><a href="#home">
     <a href="index.php"><div id="logo"></div></a>
     </a></span>
-    <ul id="menu" class="login">
-      <!-- <li><a href="">About</a></li> -->
-      <li><a href="sign-up.php">Sign Up</a></li>      
-      <li><a href="sign-in.php" class="token-btn">Sign In</a></li>
-    </ul>
-    <ul id="menu" class="logout" style="margin-top: 15px; display: none;">
-      <!-- <li><a href="#">About</a></li> -->
+    <ul id="menu">
       <li id="greeting">Hi, John</li>      
-      <li><input type="button" onclick="logOut()" class="token-btn" value = "Log out"></li>
+      <li><a onclick="logOut()" class="token-btn">Log out</a></li>
     </ul>
-    <!-- <nav> 
+    <nav> 
       <a href="" id="menuToggle" title="show menu"> <span class="navClosed"></span> </a>
-      <a href="">About</a>
-      <a href="sign-up.php">Sign Up</a>
-      <a href="sign-in.php" class="token-btn">Sign In</a>
-    </nav> -->
+      <a href="index.html" class="token-btn">Log out</a>
+      <a href="">Hi, John</a>
+    </nav>
   </div>
 </div>
 <!------------ Navigation end ------------>
-<!------------ Token sale start ------------>
-<section class="tokensale">
+
+
+<div class="setting-banner" style="text-align:center;">
   <div class="container">
-    <div class="row">
-      <div class="col-md-6">
+    <h1>Payment<br>Selection</h1>
+    <div class="h-line" style="display:inline-block;"></div>
+  </div>
+</div>
+
+<div id="settings" class="payment">
+  <div class="container">
+    <div class="settings-container">
+      <div class="row">
+        <div class="col-md-4 col-sm-4 v-pad purchase-text">
+          <p>Consentium Coin Amount:</p>
+        </div>
+        <form action="summary.php" method="POST" id="form_payment">
+          <div class="col-md-8 col-sm-8 v-pad">
+            <input id="consentium_amount" name="consentium_amount" type="text" class="input-style" oninput="countPayment()" value="<?php echo $amount?>">
+          </div>
+          <div class="col-md-4 col-sm-4 v-pad purchase-text">
+            <p>Wallet Authorization:</p>
+          </div>
+          <div class="col-md-8 col-sm-8 v-pad">
+            <input type="text" name="address" class="input-style wallet-address" value="<?php echo $_POST['address'] ?>" id="myInput" readonly>
+            <button onclick="myFunction()" class="btn-copy"><i class="fa fa-copy" aria-hidden="true"></i></button>
+            <div style="clear:both;"></div>
+          </div>
+          <div class="col-md-4 col-sm-4 v-pad purchase-text">
+            <p>Payment Method:</p>
+          </div>
+          <div class="col-md-8 col-sm-8 v-pad radio-payment">
+            <input id="eth" type="radio" name="currency" value="ETH" onclick="countPayment()"> &nbsp;&nbsp;ETH<br><br>
+            <input type="radio" name="currency" value="USD" checked="checked" onclick="countPayment()"> &nbsp;&nbsp;USD
+          </div>
+          <div class="col-md-4 col-sm-4 v-pad purchase-text">
+            <p>Payment Amount:</p>
+          </div>
+          <div class="col-md-8 col-sm-8 v-pad">
+            <input id="amount" name="amount" type="text" class="input-style" value="<?php echo $amount * 0.25 ?>">
+          </div>
+          <input type="hidden" id="conversion_rate" name="conversion_rate" value="<?php echo 0.25 ?>">
+        </form>
+        <div class="col-md-12 col-sm-12 v-pad">
+          <a onclick="submitSummary()" class="btn light-btn">Continue</a>
+        </div>
       </div>
-      <div class="col-md-6 col-sm-12">
-        <h1>Token Sale <span style="color:#ba933b;">is now live</span></h1>
-        <br>
       <br>
-      <div id="new_year"></div>
-    <br>
-    <ul class="countdown">
-      <li class="days">
-        <h3>Days</h3>
-      </li>
-      <li class="hrs">
-        <h3>Hrs</h3>
-      </li>
-      <li class="mins">
-        <h3>Min</h3>
-      </li>
-      <li class="sec">
-        <h3>Sec</h3>
-      </li>
-    </ul>
-    <br>
-    <br>
-    <div class="progress-container">
-    <div class="progress">
-      <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:50%">
-      </div>
-    </div>
-    <ul class="progress-number">
-      <li class="stats">Start</li>
-      <li class="stats">1M</li>
-      <li class="stats">5M</li>
-      <li>12M</li>
-    </ul>
-    </div>
-    <br>
-    <br>
-    <br>
-    <button onclick="getToken()" target="_self" class="btn light-btn">Get Tokens</button>
-      </div>
+      <br>
+      <span class="small-font">If you would like to change the destination wallet, please send an email to <a href="mailto:support@consentium.net" style="color:#ba933b;">support@consentium.net</a></span>
     </div>
   </div>
-</section>
-<!------------ Token sale end ------------>
-<div class="about-feature dark-feature">
-    <i class="fa fa-lock" aria-hidden="true"></i>
-    <br>
-    <br>
-    <br>
-    <h3>High level chat encryption</h3>
-    <p>High level chat encryption via SHA-256 hash algorithm</p>
-  </div>
-  <div class="about-feature light-feature">
-    <i class="fa fa-shield" aria-hidden="true"></i>
-    <br>
-    <br>
-    <br>
-    <h3>Low fee & secure</h3>
-    <p>Low-fee, secure C2C digital cryptocurrency transfers</p>
-  </div>
-  <div class="about-feature dark-feature">
-    <i class="fa fa-exchange" aria-hidden="true"></i>
-    <br>
-    <br>
-    <br>
-    <h3>Conversion</h3>
-    <p>Conversion from Fiat to BTC/ETH/CONSENTIUM</p>
-  </div>
-  <div class="about-feature light-feature">
-    <i class="fa fa-dollar" aria-hidden="true"></i>
-    <br>
-    <br>
-    <br>
-    <h3>Multi-currency</h3>
-    <p>Multi-currency crypto wallet</p>
-  </div>
-  <div class="about-feature dark-feature">
-    <i class="fa fa-comments" aria-hidden="true"></i>
-    <br>
-    <br>
-    <br>
-    <h3>CCM</h3>
-    <p>Chat Community Monetisation Model (CCM) automated engine</p>
-  </div>
-  <div style="clear:both"></div>
-  
+</div>
+
 <!------------ Footer start ------------> 
 <section id="footer">
   <div class="container">
@@ -217,7 +218,7 @@ function getToken(){
           <span class="small-font">© 2018 ASIA FOCUS GROUP PTE LTD. All Rights Reserved.</span>
           <br><br>
           
-          <!--<span class="small-font">Privacy Policy &nbsp;| &nbsp;Terms of Service</span>-->
+          <span class="small-font"><a href="#privacy" class="open-popup-link" style="color:#ba933b;">Privacy Policy</a></span>
 
         </div>
       </div>
@@ -226,35 +227,50 @@ function getToken(){
 </section>
 <!------------ Footer end ------------>
 
+<!---------- Privacy policy popup ------------>
+<div id="privacy" class="white-popup mfp-hide sans">
+  <h2>Privacy Policy</h2>
+  <br>
+  <br>
+  <p>By submitting your personal information to us, you consent to such information being used by us for the provision of the Services and also for us to communicate with you. </p>
+  <br>
+  <p>In the event if you do not agree for Consentium to process your data, please notify Consentium via email at <a style="color:#ba933b;" href="mailto:hello@consentium.net">hello@consentium.net.</a></p>
+</div>
+<!---------- Privacy policy popup END ------------> 
+
 <script>
 $(window).scroll(function() {
   var addRemClass = $(window).scrollTop() > 0 ? 'addClass' : 'removeClass';
     $("#header")[addRemClass]('bgChange');
 });
 
-</script> 
+</script>
 
 <script>
-	jQuery(function($){
-		//var NY = Math.round((new Date('1/01/2015 00:00:01')).getTime()/1000);
-		$('#new_year').flipcountdown({
-			size:'md',
-			beforeDateTime:'03/30/2018 00:00:01'
-			/*tick:function(){
-				var nol = function(h){
-					return h>9?h:'0'+h;
-				}
-				var	range  	= NY-Math.round((new Date()).getTime()/1000),
-					secday = 86400, sechour = 3600,
-					days 	= parseInt(range/secday),
-					hours	= parseInt((range%secday)/sechour),
-					min		= parseInt(((range%secday)%sechour)/60),
-					sec		= ((range%secday)%sechour)%60;
-				return nol(days)+' '+nol(hours)+' '+nol(min)+' '+nol(sec);
-			}*/
-		});
-	});
-	
+function myFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  document.execCommand("Copy");
+  alert("Copied the text: " + copyText.value);
+}
+</script>
+
+<script>
+  $(document).ready(function() {
+    $("#datepicker").datepicker();
+  });
+  </script>
+  
+ <script>
+    $(document).ready(function () {
+        $('.open-popup-link').magnificPopup({
+  type:'inline',
+  midClick: true,
+  mainClass: 'mfp-fade' // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
+  
+});
+		
+    });
 </script>
 
 <script>

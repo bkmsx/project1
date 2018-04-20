@@ -11,48 +11,27 @@
 	<link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="modal-style.css" rel="stylesheet">
-	<style type="text/css">
-		table {
-			border-collapse: collapse;
-			width: 100%;
-			background-color: #fff;
-			margin-top: 50px;
-		}
-
-		table, th, td {
-			border: 1px solid black;
-			padding: 10px;
-			text-align:center;
-		}
-
-		h1 {
-			text-align: center;
-			color: #ffefcd;
-		}
-
-		button{
-			float:left; 
-			background-color:#EDE7F6;
-			color: grey; 
-			width: 80px; 
-			height:30px; 
-			margin-bottom:10px; 
-			margin-left:10px;
-			font-weight:bold;
-		}
-
-		tr:nth-child(even) {background-color: #efe3c9;}
-	</style>
-
+	<link rel="stylesheet" type="text/css" href="style_admin.css">
 </head>
-<body style="background-color: #342c19">
-<h1>User detail</h1>
-<button onclick="logOut()">Logout</button>
+<body>
+<div class="menu">
+	<div class="inline">
+		<a class="link" href="user-list.php">User list</a>
+	</div>
+	<div class="inline">
+		<a class="link" href="transaction-list.php">Transaction list</a>
+	</div>
+	<div class="inline">
+		<a class="logout" href="#" onclick="logOut()">Logout</a>
+	</div>
+</div>
+<h1>User list</h1>
 <table>
 	<tr>
 		<th>#</th>
 		<th>Email</th>
 		<th>Name</th>
+		<th>Coin number</th>
 		<th>Date of birth</th>
 		<th>Citizenship</th>
 		<th>TimeStamp</th>
@@ -68,8 +47,9 @@ while ($user = mysqli_fetch_array($result)) {
 	$id += 1;
 	echo "<tr>";
 	echo "<td>".$id."</td>";
-	echo "<td>".$user['email']."</td>";
+	echo "<td><a href='javascript: showUserDetail(\"".$user['email']."\")' style='text-decoration: none'>".$user['email']."</a></td>";
 	echo "<td>".$user['first_name']." ".$user['last_name']."</td>";
+	echo "<td>".$user['coin_number']."</td>";
 	echo "<td>".$user['date_birth']."</td>";
 	echo "<td>".$user['citizenship']."</td>";
 	echo "<td>".$user['date']."</td>";
@@ -103,9 +83,21 @@ mysqli_close($dbc);
 </div>
 
 <script type="text/javascript">
+function showUserDetail(email){
+	var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "user-detail.php";
+    var input = document.createElement('input');
+    input.name = "email";
+    input.value = email;
+    input.type = 'hidden';
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
 function showImage(image_source, name) {
 	var modal = document.getElementById('myModal');
-
 	// Get the image and insert it inside the modal - use its "alt" text as a caption
 	var modalImg = document.getElementById("img01");
 	var captionText = document.getElementById("caption");

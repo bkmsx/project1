@@ -1,26 +1,8 @@
-<?php
-  if (!isset($_COOKIE['email']) || isset($_COOKIE['email']) && $_COOKIE['email'] == "") {
-    header('Location: sign-in.php');
-    exit;
-  }
-
-  if (!isset($_COOKIE['erc20_address']) || isset($_COOKIE['erc20_address']) && $_COOKIE['erc20_address'] == "") {
-    header('Location: step.php');
-    exit;
-  }
-
-  $user_email = $_COOKIE['email'];
-  $user_email = str_replace("%40", "@", $user_email);
-  require_once("mysqli_connect.php");
-  $user_sql = "select * from consentium_user where email = '$user_email'";
-  $user_result = mysqli_query($dbc, $user_sql);
-  $user = mysqli_fetch_array($user_result);
-?>
 <!doctype html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Consentium - Dashboard</title>
+<title>Consentium - Payment Selection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Bootstrap & Jquery -->
@@ -32,12 +14,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 <link href="style.css" rel="stylesheet" type="text/css" />
 <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
-<link rel="stylesheet" type="text/css" href="jquery.flipcountdown.css"/>
+<link rel="stylesheet" type="text/css" href="jquery.flipcountdown.css" />
 <link href="sidemenu.css" rel="stylesheet">
 <link href="magnific-popup.css" rel="stylesheet">
 <link href="media-queries.css" rel="stylesheet">
@@ -47,7 +29,6 @@
 <!-- Start of consentium Zendesk Widget script -->
 <script>/*<![CDATA[*/window.zE||(function(e,t,s){var n=window.zE=window.zEmbed=function(){n._.push(arguments)}, a=n.s=e.createElement(t),r=e.getElementsByTagName(t)[0];n.set=function(e){ n.set._.push(e)},n._=[],n.set._=[],a.async=true,a.setAttribute("charset","utf-8"), a.src="https://static.zdassets.com/ekr/asset_composer.js?key="+s, n.t=+new Date,a.type="text/javascript",r.parentNode.insertBefore(a,r)})(document,"script","aace7492-2999-420e-89fd-ec853f818169");/*]]>*/</script>
 <!-- End of consentium Zendesk Widget script -->
-
 
 <style>
 .white-popup {
@@ -74,6 +55,23 @@
 	color: #ba933b;
 }
 .mfp-content p {color:#837c6c;}
+
+span.account {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background-color: #544949;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+span.account-title {
+  
+}
+
+p.account {
+  margin-top: 5px;
+}
 </style>
 
 <!-- Add sidemenu -->
@@ -109,20 +107,12 @@ function logOut(){
     window.open("sign-in.php", "_self");
 }
 
-function purchase() {
-  form = document.getElementById("form_amount");
+function submitForm(){
+  form = document.getElementById("form_summary");
   form.submit();
 }
 </script>
 
-<style type="text/css">
-button:disabled,
-button[disabled=disabled]{
-  border: 1px solid #999999;
-  background-color: #EEBE5F;
-  color: #666666;
-}
-</style>
 </head>
 
 <body>
@@ -148,75 +138,58 @@ button[disabled=disabled]{
 
 <div class="setting-banner" style="text-align:center;">
   <div class="container">
-    <h1>Dashboard</h1>
+    <h1>Transaction<br>Summary</h1>
     <div class="h-line" style="display:inline-block;"></div>
   </div>
 </div>
 
-<div id="settings">
+<div id="settings" class="transaction">
   <div class="container">
     <div class="settings-container">
-      <div class="row">
-        <div class="col-md-3 col-sm-3 v-pad purchase-text">
-          <p>Purchase Amount:</p>
-        </div>
-        <form action="payment.php" method="POST" id="form_amount">
-          <div class="col-md-9 col-sm-9 v-pad">
-            <input type="text" name="consentium_amount" class="input-style" value="10">
-          </div>
-          <div class="col-md-3 col-sm-3 v-pad purchase-text">
-            <p>Your Wallet Address:</p>
-          </div>
-          <div class="col-md-9 col-sm-9 v-pad">
-            <input type="text" name="address" class="input-style wallet-address" value="03249mcnh238hf89wqjd092iij20fh793g7c3c2" id="myInput">
-            <button onclick="myFunction()" class="btn-copy"><i class="fa fa-copy" aria-hidden="true"></i></button>
-            <div style="clear:both;"></div>
-          </div>
-        </form>
-        <label id="error_lbl" style="color: red" <?php if($user['status'] == "CLEARED") echo "hidden"; ?>>*Your account has not been approved yet</label>
-        <div class="col-md-12 col-sm-12 v-pad">
-          <button id="purchase_btn" onclick="purchase()" class="btn light-btn" <?php if($user['status'] != "CLEARED") echo "disabled"; ?>>Purchase</button>
-        </div>
+      <h2>Please Send</h2>
+      <h2 style="color:#ba933b;"><?php echo $_POST['amount']." ".$_POST['currency']?></h2>
+      <br>
+      <br>
+      <div <?php if ($_POST['currency'] == "USD") echo "hidden";?>>
+        <h3>Destination Wallet Address</h3>
+        <br>
+        <img src="img/qr-code.jpg" alt="">
+        <br>
+        <br>
+        <br>
+        <input type="text" class="input-style wallet-address" value="03249mcnh238hf89wqjd092iij20fh793g7c3c2" id="myInput" readonly>
+        <button onclick="myFunction()" class="btn-copy"><i class="fa fa-copy" aria-hidden="true"></i></button>
+        <div style="clear:both;"></div>
+      </div>
+      <div <?php if ($_POST['currency'] == "ETH") echo "hidden";?> >
+        <h3>Bank account detail</h3><br/>
+        <p class="account"><span class="account-title">Name:</span> <span class="account">Asia Focus Group Pte Ltd</span></p>
+        <p class="account"><span class="account-title">Address:</span> <span class="account"> #12-03, SBF Center, 160 Robinson Road Singapore 068914</span></p>
+        <p class="account"><span class="account-title">Account number: </span> <span class="account"> 503370850301 </span></p>
+        <p class="account"><span class="account-title">Swift code:</span> <span class="account"> OCBCSGSG </span></p>
+        <p class="account"><span class="account-title">Bank name:</span> <span class="account"> Oversea-Chinese Banking Corporation Limited Singapore </span></p>
+        <p class="account"><span class="account-title">Bank address:</span> <span class="account"> 65 Chulia Street OCBC, Singapore 049513 </span></p>
+        <p class="account"><span class="account-title">Comments / Notes: </span> <span class="account"> <?php echo $_COOKIE['email']; ?> </span></p>
       </div>
       <br>
       <br>
-      <span class="small-font">If you would like to change the destination wallet, please send an email to <a href="mailto:support@consentium.net" style="color:#ba933b;">support@consentium.net</a></span>
-    </div>
-    <div style="background:#4d3f1f; height:1px; width:100%; margin:60px 0;"></div>
-    <h2 style="font-weight:700;">Transaction History</h2>
-    <div class="h-line" style="display:inline-block;"></div>
-    <br>
-    <br>
-    <div style="overflow-x:auto;">
-    <table>
-            <tr valign="center">
-              <th>DATE</th>
-              <th>CURRENCY</th>
-              <th>AMOUNT</th>
-              <th>ADDRESS</th>
-              <th>CONSENTIUM AMOUNT</th>
-              <th>CONSENTIUM BONUS</th>
-              <th>CONVERSION RATE</th>
-              <th>STATUS</th>
-            </tr>
-<?php 
-  $transaction_history_sql = "select * from consentium_transaction where user_email = '$user_email' order by date desc";
-  $result = mysqli_query($dbc, $transaction_history_sql);
-  while ($transaction = mysqli_fetch_array($result)){
-    echo "<tr>";
-    echo "<td>".$transaction['date']."</td>";
-    echo "<td>".$transaction['currency']."</td>";
-    echo "<td>".$transaction['amount']."</td>";
-    echo "<td>".$transaction['address']."</td>";
-    echo "<td>".$transaction['consentium_amount']."</td>";
-    echo "<td>".$transaction['consentium_bonus']."</td>";
-    echo "<td>".$transaction['conversion_rate']."</td>";
-    echo "<td>".$transaction['status']."</td>";
-    echo "</tr>";
-  }
-  mysqli_close($dbc);
-?>          
-          </table>
+      <h2>You will Receive:</h2>
+      <h2 style="color:#ba933b;"><?php echo $_POST['consentium_amount'] ?> Consentium Coin</h2>
+      <br>
+      <br>
+      <p style="color:#fff;">You will receive a confirmation email once the transaction is validated (this may take up to a few hours). We may email you with a request for KYC documents. If we do not receive your documentation, your funds will be returned to your wallet.</p>
+      <br>
+      <br>
+      <br>
+      <a onclick="submitForm()" class="btn light-btn">Purchase</a>
+
+      <form action="thankyou.php" method="POST" id="form_summary">
+        <input type="hidden" name="address" value="<?php echo $_POST['address'] ?>">
+        <input type="hidden" name="consentium_amount" value="<?php echo $_POST['consentium_amount'] ?>">
+        <input type="hidden" name="amount" value="<?php echo $_POST['amount'] ?>">
+        <input type="hidden" name="currency" value="<?php echo $_POST['currency'] ?>">
+        <input type="hidden" name="conversion_rate" value="<?php echo $_POST['conversion_rate'] ?>">
+      </form>
     </div>
   </div>
 </div>

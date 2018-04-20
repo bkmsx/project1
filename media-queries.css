@@ -173,6 +173,33 @@ ul.tab li a {
 	border:none;
 }
 
+.settings-container {
+	width:480px;
+}
+
+
+.purchase-text {
+	margin-top:0px;
+	padding-bottom:0px;
+}
+
+.wallet-address {
+	width:420px !important;
+}
+
+.radio-payment {
+	margin-top:0px;
+}
+
+.payment .wallet-address {
+	width:420px !important;
+}
+
+.transaction .wallet-address {
+	width:420px !important;
+	text-align:left;
+}
+
 }
 
 @media (max-width: 500px) {
@@ -224,6 +251,22 @@ ul.tab li a {
 .identity {
 	width:70px;
     margin-left: 65px;
+}
+
+.settings-container {
+	width:320px;
+}
+
+.wallet-address {
+	width:260px !important;
+}
+
+.payment .wallet-address {
+	width:260px !important;
+}
+
+.transaction .wallet-address {
+	width:260px !important;
 }
 
 }

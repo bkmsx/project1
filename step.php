@@ -9,14 +9,14 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 	if(isset($_FILES['file'])) {
 		$name = $_FILES['file']['name'];
 		$tmp_name = $_FILES['file']['tmp_name'];
-		$extension = strtolower(substr($name, strpos($name, '.') + 1));
+		$extension = strtolower(substr($name, strlen($name) - 3));
 		$location = 'files/'.time().'.'.$extension;
 		$type = $_FILES['file']['type'];
 		$size = $_FILES['file']['size'];
 		$max_size = 2000000;
 		if (isset($name)){
 			if (!empty($name)){
-				if (($extension == 'jpg' || $extension == 'png') && $size <= $max_size) {
+				if (($extension == 'jpg' || $extension == 'png' || $extension == 'jpeg') && $size <= $max_size) {
 					
 					if (move_uploaded_file($tmp_name, $location)){
 						
@@ -25,12 +25,15 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 						exit;
 					}
 				} else {
-					echo 'You can only upload file jpg or png and file size less than or equal 2 Mb';
+					echo 'You can only upload file jpg, jpeg or png and file size less than or equal 2 Mb. <a href="step.php">Retry</a>!';
 					exit;
 				}
 			}
 		} 
 	}
+
+	require_once('send-mail.php');
+	sendMail($_COOKIE['email'], getApplyKycTitle(), getApplyKycMessage($_POST['lname']));
 
 	$sql_max_id = "select * from consentium_user where email='".$_COOKIE['email']."'";
 	$result = mysqli_query($dbc, $sql_max_id);
@@ -67,11 +70,14 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 			$status = $data->approval_status;
 		}	
 	}
-	
+	if ($status == "CLEARED") {
+		sendMail($_COOKIE['email'], getSuccessKycTitle(), getSuccessKycMessage($_POST['lname'], $_POST['erc20_address']));
+	}
 	// Update Google sheet
 	require_once('update-sheet.php');
 	updateSheet([$_COOKIE['email'], $fname." ".$lname, $date_of_birth, $_POST['citizenship'], $_POST['country'], date('d/m/Y h:i:s', time()), $status, $_POST['erc20_address']], $user['row_number']);
-		
+	
+
 	// Update database
 	$sql = "update consentium_user set first_name='"
 	.$_POST['fname']."', last_name='"
@@ -89,6 +95,7 @@ if(isset($_FILES['file']) || !empty($_POST['fname']) || !empty($_POST['lname']) 
 	$sql = $sql."' where email='".$_COOKIE['email']."'";
 	if(mysqli_query($dbc, $sql)){
 		setcookie("erc20_address", $_POST['erc20_address'], time() + 86400 * 365);
+		setcookie("last_name", $_POST['lname'], time() + 86400 * 365);
 		include 'step.html';
 		echo "<script type='text/javascript'> 
 			$(document).ready(function(){
